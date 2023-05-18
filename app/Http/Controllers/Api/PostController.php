@@ -5,6 +5,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AnonymousPost;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Throwable;
@@ -45,6 +46,21 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $input = ['user_id' => $request->user_id, 'content' => $request->content];
+
+        $post = Post::create($input);
+
+        if (isset($post)) {
+            $data = ['post' => $post];
+            return $this->makeJson(1, $data, '新增文章成功');
+        } else {
+            $data = ['post' => $post];
+            return $this->makeJson(0, null, '新增文章失敗');
+        }
+    }
+
+    public function anonymousStore(Request $request)
+    {
+        $input = [ 'user_id' => 99999,'content' => $request->content];
 
         $post = Post::create($input);
 

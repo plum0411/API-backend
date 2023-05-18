@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -25,13 +26,19 @@ Route::middleware('auth:api')->group(function () {
 });
 
 Route::group([
+    'prefix' => 'posts'
+], function ($router) {
+Route::post('anonymousStore', [PostController::class, 'anonymousStore']);
+});
+
+Route::group([
     'prefix' => 'auth'
 ], function ($router) {
-		Route::post('login', [AuthController::class,'login']);
-		Route::post('logout', [AuthController::class,'logout']);
-		Route::post('refresh', [AuthController::class,'refresh']);
-		Route::post('me', [AuthController::class,'me']);
-        Route::post('register', [UserController::class, 'store']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
+    Route::post('register', [UserController::class, 'store']);
 });
 
 Route::middleware('auth')->group(function () {
