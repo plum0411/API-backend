@@ -47,7 +47,12 @@ class PostController extends Controller
     {
         $input = ['user_id' => $request->user_id, 'content' => $request->content];
 
-        $post = Post::create($input);
+        // Check if the user_id is provided
+        if ($request->user_id) {
+            $post = Post::create($input);
+        } else {
+            $post = AnonymousPost::create($input);
+        }
 
         if (isset($post)) {
             $data = ['post' => $post];
@@ -60,7 +65,7 @@ class PostController extends Controller
 
     public function anonymousStore(Request $request)
     {
-        $input = [ 'user_id' => 99999,'content' => $request->content];
+        $input = ['user_id' => 99999, 'content' => $request->content];
 
         $post = Post::create($input);
 

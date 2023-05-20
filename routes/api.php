@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,8 +42,7 @@ Route::group([
     Route::post('register', [UserController::class, 'store']);
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [UserController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [UserController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [UserController::class, 'destroy'])->name('profile.destroy');
-});
+Route::get('/user', [UserController::class, 'getUser'])->middleware('auth:api');
+Route::post('/user', [UserController::class, 'store']);
+Route::put('/user', [UserController::class, 'update'])->middleware('auth:api');
+Route::delete('/user', [UserController::class, 'destroy'])->middleware('auth:api');

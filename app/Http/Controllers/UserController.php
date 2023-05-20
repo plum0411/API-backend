@@ -17,9 +17,10 @@ class UserController extends Controller
             'id' => $user->id,
         ]);
     }
+
     public function store(Request $request)
     {
-       $data= $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
