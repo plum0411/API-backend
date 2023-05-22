@@ -5,9 +5,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\AnonymousPost;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class PostController extends Controller
@@ -21,7 +25,7 @@ class PostController extends Controller
 
     public function index()
     {
-        $posts = Post::get();
+        $posts = Post::with('user')->get();
 
         if (isset($posts) && count($posts) > 0) {
             $data = ['posts' => $posts];
@@ -78,23 +82,24 @@ class PostController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePostRequest $request, $id)
     {
+        $data = $request->validated();
 
-        try {
-            $post = Post::findOrFail($id);
-            $post->user_id = $request->user_id;
-            $post->content = $request->content;
-            $post->save();
-        } catch (Throwable $e) {
-            //更新失敗
-            $data = ['post' => $post];
-            return $this->makeJson(0, null, '更新文章失敗');
+        $post = Post::findOrFail($id);
+
+
+        if (!$post) {
+            return response()->json(['message' => '文章不存在'], 404);
         }
 
-        $data = ['post' => $post];
-        return $this->makeJson(1, $data, '更新文章成功');
+        $post->user_id = $data['user_id'];
+        $post->content = $data['content'];
+        $post->save();
+
+        return response()->json(['message' => '文章更新成功', 'data' => $post], 200);
     }
+
 
     public function destroy($id)
     {

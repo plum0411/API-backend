@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,6 +21,14 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
+
+        // Add a default anonymous user
+        DB::table('users')->insert([
+            'id' => 99999,
+            'name' => '匿名',
+            'email' => 'anonymous@example.com',
+            'password' => bcrypt('password'), // Change 'password' to the desired default password
+        ]);
     }
 
     /**
