@@ -93,7 +93,7 @@ class PostController extends Controller
             return response()->json(['message' => '文章不存在'], 404);
         }
 
-        $post->user_id = $data['user_id'];
+        // $post->user_id = $data['user_id'];
         $post->content = $data['content'];
         $post->save();
 
